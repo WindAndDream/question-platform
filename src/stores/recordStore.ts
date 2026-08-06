@@ -69,6 +69,32 @@ export const useRecordStore = defineStore("records", () => {
     records.value = records.value.filter((record) => !keySet.has(record.key));
   };
 
+  const resetProgressForBank = async (
+    libraryId: string,
+    bankId: string,
+  ): Promise<void> => {
+    const updatedRows = records.value
+      .filter(
+        (record) =>
+          record.libraryId === libraryId && record.bankId === bankId,
+      )
+      .map((record) => {
+        const row = structuredClone(toRaw(record));
+        delete row.progress;
+        return row;
+      });
+
+    if (updatedRows.length === 0) return;
+
+    await appDb.records.bulkPut(updatedRows);
+    const updatedByKey = new Map(
+      updatedRows.map((record) => [record.key, record]),
+    );
+    records.value = records.value.map(
+      (record) => updatedByKey.get(record.key) ?? record,
+    );
+  };
+
   const toggle = async (
     bank: LoadedBank,
     question: Question,
@@ -91,6 +117,7 @@ export const useRecordStore = defineStore("records", () => {
     isRecorded,
     add,
     remove,
+    resetProgressForBank,
     toggle,
   };
 });
