@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import QuestionCard from '@/components/QuestionCard.vue'
 import QuestionNavigator from '@/components/QuestionNavigator.vue'
@@ -58,6 +58,16 @@ const syncRecordedSnapshot = async (): Promise<void> => {
   await records.add(bank.value, session.currentQuestion, session.currentProgress)
 }
 
+let autoNextTimer: ReturnType<typeof setTimeout> | undefined
+
+const scheduleAutoNext = (): void => {
+  if (autoNextTimer) window.clearTimeout(autoNextTimer)
+  autoNextTimer = window.setTimeout(() => {
+    session.next()
+    autoNextTimer = undefined
+  }, 450)
+}
+
 const selectOption = async (optionId: string): Promise<void> => {
   const question = session.currentQuestion
   if (!question || session.mode === 'memorize') return
@@ -69,7 +79,7 @@ const selectOption = async (optionId: string): Promise<void> => {
   const result = await session.answerImmediately(optionId)
   await syncRecordedSnapshot()
   if (preferences.preferences.autoNext && result === 'correct' && session.currentIndex < session.questions.length - 1) {
-    setTimeout(() => session.next(), 450)
+    scheduleAutoNext()
   }
 }
 
@@ -77,13 +87,64 @@ const submit = async (): Promise<void> => {
   const result = await session.submit()
   await syncRecordedSnapshot()
   if (preferences.preferences.autoNext && result === 'correct' && session.currentIndex < session.questions.length - 1) {
-    setTimeout(() => session.next(), 450)
+    scheduleAutoNext()
   }
 }
 
 const resetCurrent = async (): Promise<void> => {
   await session.resetCurrent()
   await syncRecordedSnapshot()
+}
+
+const resettingAll = ref(false)
+const resetSucceeded = ref(false)
+let resetSucceededTimer: ReturnType<typeof setTimeout> | undefined
+
+onBeforeUnmount(() => {
+  if (autoNextTimer) window.clearTimeout(autoNextTimer)
+  if (resetSucceededTimer) window.clearTimeout(resetSucceededTimer)
+})
+
+const hasProgress = computed(() =>
+  Object.values(session.progressByQuestion).some(
+    (progress) =>
+      progress.status !== 'unanswered' ||
+      progress.selectedOptionIds.length > 0,
+  ),
+)
+
+const resetAll = async (): Promise<void> => {
+  const currentBank = bank.value
+  if (!currentBank || resettingAll.value || !hasProgress.value) return
+
+  const confirmed = window.confirm(
+    `确定重置“${currentBank.bank.name}”的全部答题状态吗？\n\n所有已选答案、正确和错误状态都会恢复为未答。已记录的题目会保留，但其答题快照也会被清空。此操作无法撤销。`,
+  )
+  if (!confirmed) return
+
+  if (autoNextTimer) {
+    window.clearTimeout(autoNextTimer)
+    autoNextTimer = undefined
+  }
+
+  resettingAll.value = true
+  resetSucceeded.value = false
+  if (resetSucceededTimer) window.clearTimeout(resetSucceededTimer)
+
+  try {
+    await session.resetAll()
+    await records.resetProgressForBank(currentBank.libraryId, currentBank.bank.id)
+    resetSucceeded.value = true
+    resetSucceededTimer = window.setTimeout(() => {
+      resetSucceeded.value = false
+      resetSucceededTimer = undefined
+    }, 1800)
+  } catch (error) {
+    console.error('重置全部题目失败：', error)
+    window.alert('重置失败，请稍后重试。')
+  } finally {
+    resettingAll.value = false
+  }
 }
 
 const toggleRecord = async (): Promise<void> => {
@@ -105,6 +166,15 @@ const toggleRecord = async (): Promise<void> => {
             <button :class="{ active: session.mode === 'practice' }" type="button" @click="switchMode('practice')">练习模式</button>
             <button :class="{ active: session.mode === 'memorize' }" type="button" @click="switchMode('memorize')">背题模式</button>
           </div>
+          <button
+            class="danger-button"
+            type="button"
+            :disabled="resettingAll || !hasProgress"
+            :title="hasProgress ? '将当前题库的全部答题状态恢复为未答' : '当前题库没有可重置的答题状态'"
+            @click="resetAll"
+          >
+            {{ resettingAll ? '重置中…' : resetSucceeded ? '已重置' : '重置全部' }}
+          </button>
           <label class="toggle-label">
             <input
               type="checkbox"
