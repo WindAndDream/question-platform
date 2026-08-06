@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "id": "media-question-demo",
+  "name": "图片题与多题型配置示例",
+  "description": "专门演示题干图片、选项图片、单选题、多选题和判断题的配置方式。",
+  "version": "2026-08-06",
+  "category": "配置演示",
+  "assetsBase": "../assets",
+  "questions": [
+    {
+      "id": "demo-single-circuit",
+      "type": "single",
+      "stem": [
+        { "type": "text", "text": "观察下图，哪一个元件表示熔断器（FU）？" },
+        { "type": "image", "src": "demo/circuit-question.svg", "alt": "简化电路图", "caption": "题干可以按文字—图片—文字的顺序组合。", "maxWidth": "620px" }
+      ],
+      "options": [
+        { "id": "A", "content": "QS" },
+        { "id": "B", "content": "FU" },
+        { "id": "C", "content": "KM" },
+        { "id": "D", "content": "FR" }
+      ],
+      "answer": ["B"],
+      "explanation": [
+        { "type": "text", "text": "FU 是熔断器的常用文字符号；QS 常用于隔离开关，KM 常用于接触器，FR 常用于热继电器。" },
+        { "type": "note", "title": "配置提示", "text": "题干、选项和解析都使用同一种内容块模型。" }
+      ],
+      "tags": ["单选题", "题干图片"],
+      "difficulty": 1
+    },
+    {
+      "id": "demo-multiple-images",
+      "type": "multiple",
+      "stem": "下列哪些图形属于平台支持的图片选项？（可多选）",
+      "options": [
+        { "id": "A", "content": [{ "type": "image", "src": "demo/option-a.svg", "alt": "圆形图标", "caption": "A：图片选项" }] },
+        { "id": "B", "content": [{ "type": "image", "src": "demo/option-b.svg", "alt": "方形图标", "caption": "B：图片选项" }] },
+        { "id": "C", "content": "C：纯文字选项也可以与图片选项混用" },
+        { "id": "D", "content": [{ "type": "text", "text": "D：文字与图片组合" }, { "type": "image", "src": "demo/option-d.svg", "alt": "三角形图标" }] }
+      ],
+      "answer": ["A", "B", "D"],
+      "explanation": "A、B、D 都包含 image 内容块；多选题必须点击“提交答案”后才会判定。",
+      "tags": ["多选题", "选项图片"],
+      "difficulty": 1
+    },
+    {
+      "id": "demo-judgement",
+      "type": "judgement",
+      "stem": "判断题可以省略 options，平台会自动生成“对 / 错”两个选项。",
+      "answer": ["true"],
+      "explanation": "判断题的答案使用 true 或 false；这能避免把中文显示文案与内部答案值耦合。",
+      "tags": ["判断题", "自动选项"]
+    }
+  ]
+}
