@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "libraryId": "builtin-electrician-library",
+  "name": "内置电工题库示例",
+  "description": "包含从旧网页迁移的判断题，以及覆盖题干图片、选项图片和多题型的配置示例。",
+  "banks": [
+    {
+      "id": "完整-1-1398-low-voltage-questions",
+      "name": "1-1398 低压电工考证题目",
+      "file": "banks/favorites/low-voltage-complete-questions-1-1398.json",
+      "description": "222"
+    },
+    {
+      "id": "手机收藏-1-100-low-voltage-judgement",
+      "name": "1-100 低压电工作业判断题（网页迁移示例）",
+      "file": "banks/favorites/1-100-low-voltage-judgement.json",
+      "description": ""
+    },
+    {
+      "id": "手机收藏-101-200-low-voltage-judgement",
+      "name": "101-200 低压电工作业判断题（网页迁移示例）",
+      "file": "banks/favorites/101-200-low-voltage-judgement.json",
+      "description": ""
+    },
+    {
+      "id": "手机收藏-201-300-low-voltage-judgement",
+      "name": "201-300 低压电工作业判断题（网页迁移示例）",
+      "file": "banks/favorites/201-300-low-voltage-questions.json",
+      "description": ""
+    },
+    {
+      "id": "手机收藏-301-400-low-voltage-judgement",
+      "name": "301-400 低压电工作业判断题（网页迁移示例）",
+      "file": "banks/favorites/301-400-low-voltage-questions.json",
+      "description": ""
+    },
+    {
+      "id": "手机收藏-401-500-low-voltage-judgement",
+      "name": "401-500 低压电工作业判断题（网页迁移示例）",
+      "file": "banks/favorites/401-500-low-voltage-questions.json",
+      "description": ""
+    },
+    {
+      "id": "手机收藏-501-600-low-voltage-judgement",
+      "name": "501-600 低压电工作业判断题（网页迁移示例）",
+      "file": "banks/favorites/501-600-low-voltage-questions.json",
+      "description": ""
+    }
+  ]
+}
