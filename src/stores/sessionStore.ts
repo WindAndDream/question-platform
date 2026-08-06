@@ -141,15 +141,38 @@ export const useSessionStore = defineStore('session', () => {
   }
 
   const resetCurrent = async (): Promise<void> => {
-    const bank = loadedBank.value
-    const question = currentQuestion.value
-    if (!bank || !question) return
-    const key = progressKey(bank.libraryId, bank.bank.id, question.id)
-    delete progressByQuestion.value[key]
-    progressByQuestion.value = { ...progressByQuestion.value }
+    if (!loadedBank.value || !currentQuestion.value) return
     draftSelection.value = []
     submitted.value = false
-    await appDb.progress.delete(key)
+    await saveProgress('unanswered')
+  }
+
+  const resetAll = async (): Promise<void> => {
+    const bank = loadedBank.value
+    if (!bank) return
+
+    const now = new Date().toISOString()
+    const rows: QuestionProgress[] = questions.value.map((question) => ({
+      key: progressKey(bank.libraryId, bank.bank.id, question.id),
+      libraryId: bank.libraryId,
+      bankId: bank.bank.id,
+      questionId: question.id,
+      selectedOptionIds: [],
+      status: 'unanswered',
+      updatedAt: now,
+    }))
+
+    await appDb.transaction('rw', appDb.progress, async () => {
+      await appDb.progress
+        .where('[libraryId+bankId]')
+        .equals([bank.libraryId, bank.bank.id])
+        .delete()
+      if (rows.length > 0) await appDb.progress.bulkPut(rows)
+    })
+
+    progressByQuestion.value = Object.fromEntries(rows.map((row) => [row.key, row]))
+    currentIndex.value = 0
+    restoreQuestionState()
   }
 
   return {
@@ -172,5 +195,6 @@ export const useSessionStore = defineStore('session', () => {
     submit,
     answerImmediately,
     resetCurrent,
+    resetAll,
   }
 })
