@@ -59,8 +59,17 @@ const exportRecords = async (includeState: boolean): Promise<void> => {
   </section>
   <p v-if="message" class="inline-message">{{ message }}</p>
 
-  <div v-if="store.records.length === 0" class="empty-state">
-    暂无记录题目。请在答题页面开启“记录模式”，再点击“记录本题”。
+  <div v-if="store.loading" class="empty-state">正在恢复记录题目…</div>
+
+  <div v-else-if="store.error" class="empty-state error-state">
+    <p>记录题目读取失败：{{ store.error }}</p>
+    <button class="secondary-button" type="button" @click="store.reload">重新读取</button>
+  </div>
+
+  <div v-else-if="store.records.length === 0" class="empty-state">
+    <p>暂无记录题目。请在答题页面开启“记录模式”，再点击“记录本题”。</p>
+    <p>若曾在另一个浏览器或浏览器配置中使用，原数据仍保存在那里；可在原浏览器下载备份后到这里恢复。</p>
+    <RouterLink class="secondary-button inline-button" to="/settings">查看数据安全与恢复</RouterLink>
   </div>
 
   <div v-else class="record-list">

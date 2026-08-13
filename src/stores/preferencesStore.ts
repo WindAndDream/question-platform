@@ -14,38 +14,66 @@ const defaults = (): AppPreferences => ({
 export const usePreferencesStore = defineStore('preferences', () => {
   const preferences = ref<AppPreferences>(defaults())
   const initialized = ref(false)
+  const error = ref('')
   let initializationPromise: Promise<void> | undefined
 
-  const initialize = async (): Promise<void> => {
-    if (initialized.value) return
-    if (initializationPromise) return initializationPromise
+  const load = async (force: boolean): Promise<void> => {
+    if (!force && initialized.value) return
+    if (initializationPromise) {
+      await initializationPromise
+      if (!force) return
+    }
+
     initializationPromise = (async () => {
-      preferences.value = (await appDb.preferences.get('preferences')) ?? defaults()
-      initialized.value = true
-      initializationPromise = undefined
+      error.value = ''
+      try {
+        preferences.value = (await appDb.preferences.get('preferences')) ?? defaults()
+        initialized.value = true
+      } catch (reason) {
+        initialized.value = false
+        error.value = reason instanceof Error ? reason.message : '偏好设置读取失败'
+        throw reason
+      } finally {
+        initializationPromise = undefined
+      }
     })()
     return initializationPromise
   }
 
-  const persist = async (): Promise<void> => {
-    preferences.value.updatedAt = new Date().toISOString()
-    await appDb.preferences.put({ ...preferences.value })
+  const initialize = (): Promise<void> => load(false)
+  const reload = (): Promise<void> => load(true)
+
+  const persist = async (changes: Partial<AppPreferences>): Promise<void> => {
+    const next: AppPreferences = {
+      ...preferences.value,
+      ...changes,
+      id: 'preferences',
+      updatedAt: new Date().toISOString(),
+    }
+    await appDb.preferences.put(next)
+    preferences.value = next
   }
 
   const setRecordMode = async (enabled: boolean): Promise<void> => {
-    preferences.value.recordMode = enabled
-    await persist()
+    await persist({ recordMode: enabled })
   }
 
   const setDefaultStudyMode = async (mode: StudyMode): Promise<void> => {
-    preferences.value.defaultStudyMode = mode
-    await persist()
+    await persist({ defaultStudyMode: mode })
   }
 
   const setAutoNext = async (enabled: boolean): Promise<void> => {
-    preferences.value.autoNext = enabled
-    await persist()
+    await persist({ autoNext: enabled })
   }
 
-  return { preferences, initialized, initialize, setRecordMode, setDefaultStudyMode, setAutoNext }
+  return {
+    preferences,
+    initialized,
+    error,
+    initialize,
+    reload,
+    setRecordMode,
+    setDefaultStudyMode,
+    setAutoNext,
+  }
 })

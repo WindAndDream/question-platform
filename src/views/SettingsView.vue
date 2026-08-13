@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import DataSafetyPanel from '@/components/settings/DataSafetyPanel.vue'
 import { usePreferencesStore } from '@/stores/preferencesStore'
 
 const store = usePreferencesStore()
@@ -12,6 +13,8 @@ const store = usePreferencesStore()
       <p>这些设置会保存到当前浏览器的 IndexedDB。</p>
     </div>
   </section>
+
+  <DataSafetyPanel />
 
   <section class="settings-list card-panel">
     <label class="setting-row">

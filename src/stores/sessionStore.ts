@@ -95,10 +95,16 @@ export const useSessionStore = defineStore('session', () => {
     if (!question || mode.value === 'memorize' || submitted.value) return
 
     if (question.type === 'multiple') {
+      const previousSelection = [...draftSelection.value]
       draftSelection.value = draftSelection.value.includes(optionId)
         ? draftSelection.value.filter((id) => id !== optionId)
         : [...draftSelection.value, optionId]
-      await saveProgress('unanswered')
+      try {
+        await saveProgress('unanswered')
+      } catch (reason) {
+        draftSelection.value = previousSelection
+        throw reason
+      }
     } else {
       draftSelection.value = [optionId]
     }
@@ -120,8 +126,8 @@ export const useSessionStore = defineStore('session', () => {
       updatedAt: now,
       ...(status === 'unanswered' ? {} : { answeredAt: now }),
     }
-    progressByQuestion.value = { ...progressByQuestion.value, [key]: row }
     await appDb.progress.put(row)
+    progressByQuestion.value = { ...progressByQuestion.value, [key]: row }
     return row
   }
 
@@ -130,21 +136,35 @@ export const useSessionStore = defineStore('session', () => {
     if (!question) return 'unanswered'
     const status = evaluateAnswer(question, draftSelection.value)
     if (status === 'unanswered') return status
-    submitted.value = true
     await saveProgress(status)
+    submitted.value = true
     return status
   }
 
   const answerImmediately = async (optionId: string): Promise<AnswerStatus> => {
-    await toggleOption(optionId)
-    return submit()
+    const previousSelection = [...draftSelection.value]
+    try {
+      await toggleOption(optionId)
+      return await submit()
+    } catch (reason) {
+      draftSelection.value = previousSelection
+      throw reason
+    }
   }
 
   const resetCurrent = async (): Promise<void> => {
     if (!loadedBank.value || !currentQuestion.value) return
+    const previousSelection = [...draftSelection.value]
+    const wasSubmitted = submitted.value
     draftSelection.value = []
     submitted.value = false
-    await saveProgress('unanswered')
+    try {
+      await saveProgress('unanswered')
+    } catch (reason) {
+      draftSelection.value = previousSelection
+      submitted.value = wasSubmitted
+      throw reason
+    }
   }
 
   const resetAll = async (): Promise<void> => {

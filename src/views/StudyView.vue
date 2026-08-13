@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import QuestionCard from '@/components/QuestionCard.vue'
 import QuestionNavigator from '@/components/QuestionNavigator.vue'
@@ -17,6 +17,7 @@ const libraries = useLibraryStore()
 const session = useSessionStore()
 const preferences = usePreferencesStore()
 const records = useRecordStore()
+const initializationError = shallowRef('')
 
 const modeFromRoute = computed<StudyMode>(() => route.query.mode === 'memorize' ? 'memorize' : 'practice')
 const bank = computed(() => session.loadedBank)
@@ -36,13 +37,18 @@ const getStatus = (questionId: string): AnswerStatus => {
 }
 
 const initialize = async (): Promise<void> => {
-  await Promise.all([libraries.initialize(), preferences.initialize(), records.initialize()])
-  const found = libraries.findBank(props.libraryId, props.bankId)
-  if (!found) {
-    await router.replace('/')
-    return
+  initializationError.value = ''
+  try {
+    await Promise.all([libraries.initialize(), preferences.initialize(), records.initialize()])
+    const found = libraries.findBank(props.libraryId, props.bankId)
+    if (!found) {
+      await router.replace('/')
+      return
+    }
+    await session.openBank(found, modeFromRoute.value)
+  } catch (reason) {
+    initializationError.value = reason instanceof Error ? reason.message : '答题进度读取失败'
   }
-  await session.openBank(found, modeFromRoute.value)
 }
 
 onMounted(initialize)
@@ -154,7 +160,11 @@ const toggleRecord = async (): Promise<void> => {
 </script>
 
 <template>
-  <div v-if="bank && session.currentQuestion" class="study-layout">
+  <div v-if="initializationError" class="empty-state error-state">
+    <p>学习数据读取失败：{{ initializationError }}</p>
+    <button class="secondary-button" type="button" @click="initialize">重新读取</button>
+  </div>
+  <div v-else-if="bank && session.currentQuestion" class="study-layout">
     <div class="study-main">
       <section class="study-toolbar card-panel">
         <div>
@@ -226,5 +236,5 @@ const toggleRecord = async (): Promise<void> => {
       @select="session.goTo"
     />
   </div>
-  <div v-else class="empty-state">正在准备题目…</div>
+  <div v-else class="empty-state">正在恢复题目与答题进度…</div>
 </template>

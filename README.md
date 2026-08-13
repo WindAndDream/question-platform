@@ -30,15 +30,23 @@
 ## 启动
 
 ```bash
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
+
+开发服务器和预览服务器都固定使用 `http://localhost:5173`。不要改用
+`127.0.0.1`、其他端口或另一个浏览器配置，因为 IndexedDB 按“协议 + 主机 + 端口 +
+浏览器配置”隔离；这些地址或浏览器之间不会自动共享答题进度。
+
+“设置 → 数据安全”可以下载或恢复完整学习数据备份。切换 Chrome / Edge、浏览器配置或
+设备前，应先下载备份，再在目标浏览器恢复。恢复采用合并策略，不会用旧备份覆盖更新时间
+更晚的现有进度。
 
 构建与检查：
 
 ```bash
-npm run check
-npm run build
+pnpm check
+pnpm build
 ```
 
 ## 题包目录结构
