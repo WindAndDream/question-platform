@@ -11,39 +11,45 @@
       "description": "222"
     },
     {
-      "id": "手机收藏-1-100-low-voltage-judgement",
+      "id": "手机收藏-1-100-low-voltage-questions",
       "name": "1-100 低压电工作业判断题（网页迁移示例）",
-      "file": "banks/favorites/1-100-low-voltage-judgement.json",
+      "file": "banks/favorites/1-100-low-voltage-questions.json",
       "description": ""
     },
     {
-      "id": "手机收藏-101-200-low-voltage-judgement",
+      "id": "手机收藏-101-200-low-voltage-questions",
       "name": "101-200 低压电工作业判断题（网页迁移示例）",
-      "file": "banks/favorites/101-200-low-voltage-judgement.json",
+      "file": "banks/favorites/101-200-low-voltage-questions.json",
       "description": ""
     },
     {
-      "id": "手机收藏-201-300-low-voltage-judgement",
+      "id": "手机收藏-201-300-low-voltage-questions",
       "name": "201-300 低压电工作业判断题（网页迁移示例）",
       "file": "banks/favorites/201-300-low-voltage-questions.json",
       "description": ""
     },
     {
-      "id": "手机收藏-301-400-low-voltage-judgement",
+      "id": "手机收藏-301-400-low-voltage-questions",
       "name": "301-400 低压电工作业判断题（网页迁移示例）",
       "file": "banks/favorites/301-400-low-voltage-questions.json",
       "description": ""
     },
     {
-      "id": "手机收藏-401-500-low-voltage-judgement",
+      "id": "手机收藏-401-500-low-voltage-questions",
       "name": "401-500 低压电工作业判断题（网页迁移示例）",
       "file": "banks/favorites/401-500-low-voltage-questions.json",
       "description": ""
     },
     {
-      "id": "手机收藏-501-600-low-voltage-judgement",
+      "id": "手机收藏-501-600-low-voltage-questions",
       "name": "501-600 低压电工作业判断题（网页迁移示例）",
       "file": "banks/favorites/501-600-low-voltage-questions.json",
+      "description": ""
+    },
+    {
+      "id": "手机收藏-601-820-low-voltage-questions",
+      "name": "601-820 低压电工作业判断题（网页迁移示例）",
+      "file": "banks/favorites/601-820-low-voltage-questions.json",
       "description": ""
     }
   ]

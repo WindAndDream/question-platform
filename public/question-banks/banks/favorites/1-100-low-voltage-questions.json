@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "手机收藏-1-100-low-voltage-judgement",
+  "id": "手机收藏-1-100-low-voltage-questions",
   "name": "手机收藏-低压电工作业判断题（1-100题）",
   "description": "从用户提供的旧网页数据中提取的第 1-100 题，共 100 道判断题；保留题干图片相对路径。",
   "version": "2026-08-06",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "手机收藏-201-300-low-voltage-judgement",
+  "id": "手机收藏-201-300-low-voltage-questions",
   "name": "手机收藏-低压电工作业判断题（201-300题）",
   "description": "从用户提供的旧网页数据中提取的第 201–300 题，共 100 道，包含判断题和单选题；保留题干、选项及解析中的图片相对路径。",
   "version": "2026-08-06",
