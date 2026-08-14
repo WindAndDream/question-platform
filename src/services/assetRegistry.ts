@@ -1,5 +1,5 @@
 import { appDb } from '@/db/appDb'
-import { dirname, isExternalAsset, joinPath, normalizePath } from '@/utils/path'
+import { dirname, isExternalAsset, joinPath, normalizePath, resolvePublicPath } from '@/utils/path'
 
 class AssetRegistry {
   private objectUrlCache = new Map<string, string>()
@@ -11,7 +11,7 @@ class AssetRegistry {
     const resolvedPath = joinPath(configDirectory, assetsBase ?? '', src)
 
     if (libraryId === 'builtin-electrician-library') {
-      return `/question-banks/${resolvedPath}`
+      return resolvePublicPath(`question-banks/${resolvedPath}`)
     }
 
     const cacheKey = `${libraryId}::${resolvedPath}`

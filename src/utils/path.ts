@@ -16,5 +16,10 @@ export const dirname = (path: string): string => {
 
 export const joinPath = (...parts: string[]): string => normalizePath(parts.filter(Boolean).join('/'))
 
+export const resolvePublicPath = (path: string, baseUrl = import.meta.env.BASE_URL): string => {
+  const normalizedBase = baseUrl.endsWith('/') ? baseUrl : `${baseUrl}/`
+  return `${normalizedBase}${normalizePath(path)}`
+}
+
 export const isExternalAsset = (src: string): boolean =>
   /^(https?:|data:|blob:)/i.test(src)

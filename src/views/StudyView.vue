@@ -220,13 +220,15 @@ const toggleRecord = async (): Promise<void> => {
         @submit="submit"
         @reset="resetCurrent"
         @toggle-record="toggleRecord"
-      />
-
-      <div class="study-footer-actions">
-        <button class="secondary-button" type="button" :disabled="session.currentIndex === 0" @click="session.previous">上一题</button>
-        <span>{{ session.currentIndex + 1 }} / {{ session.questions.length }}</span>
-        <button class="primary-button" type="button" :disabled="session.currentIndex >= session.questions.length - 1" @click="session.next">下一题</button>
-      </div>
+      >
+        <template #navigation>
+          <nav class="question-navigation-actions" aria-label="题目切换">
+            <button class="secondary-button" type="button" :disabled="session.currentIndex === 0" @click="session.previous">上一题</button>
+            <span>{{ session.currentIndex + 1 }} / {{ session.questions.length }}</span>
+            <button class="primary-button" type="button" :disabled="session.currentIndex >= session.questions.length - 1" @click="session.next">下一题</button>
+          </nav>
+        </template>
+      </QuestionCard>
     </div>
 
     <QuestionNavigator

@@ -25,6 +25,10 @@ const emit = defineEmits<{
   toggleRecord: []
 }>()
 
+defineSlots<{
+  navigation(): unknown
+}>()
+
 const options = computed(() => getQuestionOptions(props.question))
 const typeLabel = computed(() => ({ single: '单选题', multiple: '多选题', judgement: '判断题' })[props.question.type])
 const showResult = computed(() => props.mode === 'memorize' || props.submitted)
@@ -102,6 +106,8 @@ const optionHint = (optionId: string): string => {
         提交答案
       </button>
     </div>
+
+    <slot name="navigation" />
 
     <section v-if="showResult" class="answer-panel">
       <div class="answer-summary">

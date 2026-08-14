@@ -9,7 +9,7 @@ import type {
   StoredAsset,
   StoredLibrary,
 } from '@/types/question'
-import { normalizePath } from '@/utils/path'
+import { normalizePath, resolvePublicPath } from '@/utils/path'
 
 interface VirtualFile {
   path: string
@@ -132,13 +132,13 @@ const persistImportedLibrary = async (
 }
 
 export const loadBuiltinLibrary = async (): Promise<LoadedLibrary> => {
-  const manifestResponse = await fetch('/question-banks/manifest.json')
+  const manifestResponse = await fetch(resolvePublicPath('question-banks/manifest.json'))
   if (!manifestResponse.ok) throw new Error('内置题库清单加载失败')
   const manifest: QuestionLibraryManifest = manifestSchema.parse(await manifestResponse.json())
   const banks: Array<{ path: string; bank: QuestionBank }> = []
 
   for (const item of manifest.banks) {
-    const response = await fetch(`/question-banks/${item.file}`)
+    const response = await fetch(resolvePublicPath(`question-banks/${item.file}`))
     if (!response.ok) throw new Error(`内置题库加载失败：${item.file}`)
     banks.push({ path: item.file, bank: questionBankSchema.parse(await response.json()) })
   }

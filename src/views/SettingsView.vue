@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import DataSafetyPanel from '@/components/settings/DataSafetyPanel.vue'
 import { usePreferencesStore } from '@/stores/preferencesStore'
+import { resolvePublicPath } from '@/utils/path'
 
 const store = usePreferencesStore()
+const questionBankDocsUrl = resolvePublicPath('question-banks/README.md')
 </script>
 
 <template>
@@ -63,6 +65,6 @@ const store = usePreferencesStore()
       <li>图片路径相对于题库 JSON 的 <code>assetsBase</code> 解析，文件夹和 ZIP 导入后都会保存到 IndexedDB。</li>
       <li>题目 ID、选项 ID、正确答案在导入时通过 Zod 校验，重复 ID 或不存在的答案会直接阻止导入。</li>
     </ul>
-    <a class="secondary-button inline-button" href="/question-banks/README.md" target="_blank" rel="noreferrer">查看配置说明</a>
+    <a class="secondary-button inline-button" :href="questionBankDocsUrl" target="_blank" rel="noreferrer">查看配置说明</a>
   </section>
 </template>

@@ -49,6 +49,20 @@ pnpm check
 pnpm build
 ```
 
+## 部署到 GitHub Pages
+
+仓库已配置 GitHub Actions。合并或推送到 `main` 分支后，工作流会自动检查、构建并发布站点；也可以在仓库的 **Actions** 页面手动运行。
+
+首次部署前，需要在 GitHub 仓库的 **Settings → Pages → Build and deployment → Source** 中选择 **GitHub Actions**。部署完成后的默认地址为：
+
+```text
+https://windanddream.github.io/question-platform/
+```
+
+工作流会根据仓库名设置 Vite 的部署子路径，站内路由使用 Hash 模式，以保证 GitHub Pages 上刷新答题页、记录页和设置页时不会出现 404。
+
+学习进度保存在当前设备浏览器的 IndexedDB 中，不会自动在电脑和手机间同步。换设备时可通过“设置 → 数据安全”先下载完整备份，再在手机浏览器中恢复。
+
 ## 题包目录结构
 
 ```text

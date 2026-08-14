@@ -157,7 +157,7 @@ code { padding: 0.12rem 0.36rem; border-radius: 0.35rem; background: #eef3f1; co
 .explanation { padding: 18px 22px 24px; border-top: 1px dashed var(--border); }
 .explanation h3 { margin: 0 0 0.75rem; font-size: 1rem; }
 .explanation .rich-content { color: #3f504c; line-height: 1.75; }
-.study-footer-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 14px; }
+.question-navigation-actions { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 18px 26px; border-top: 1px solid var(--border); background: white; }
 .question-navigator { position: sticky; top: 92px; padding: 18px; border: 1px solid var(--border); border-radius: 18px; background: white; box-shadow: var(--shadow); }
 .navigator-title { display: flex; justify-content: space-between; margin-bottom: 14px; }
 .navigator-title span { color: var(--text-muted); }
@@ -245,5 +245,6 @@ select { min-height: 42px; padding: 0.55rem 0.75rem; border: 1px solid #c9d7d4; 
   .button-row > * { flex: 1 1 auto; }
   .toolbar-controls { align-items: flex-start; flex-direction: column; }
   .number-grid { grid-template-columns: repeat(5, 1fr); }
-  .study-footer-actions button { padding-inline: 0.8rem; }
+  .question-navigation-actions { padding-right: 15px; padding-left: 15px; }
+  .question-navigation-actions button { padding-inline: 0.8rem; }
 }
